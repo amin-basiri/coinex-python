@@ -10,15 +10,11 @@ class SpotClient(Client):
         )
 
     def all_markets_info(self):
-        return self._request(
-            url='/market/info',
-            method=RequestMethod.GET
-        )
+        return self._request(url="/market/info", method=RequestMethod.GET)
 
     def my_balance(self):
         return self._request(
-            url='/balance/info',
+            url="/balance/info",
             method=RequestMethod.GET,
             has_signature=True,
         )
-

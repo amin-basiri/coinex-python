@@ -1,12 +1,11 @@
-import hmac
 import hashlib
 import time
-
-import requests
 from urllib.parse import urlencode
 
+import requests
+
 from coinex.enums import RequestMethod
-from coinex.exceptions import RequestFailedToSendException, CoinExBaseException
+from coinex.exceptions import CoinExBaseException, RequestFailedToSendException
 
 
 class Client:
@@ -32,7 +31,7 @@ class Client:
         headers.update({"Content-Type": "application/json"})
 
         if method == RequestMethod.GET:
-            return self._get(url=self.base_url+url, params=data, headers=headers)
+            return self._get(url=self.base_url + url, params=data, headers=headers)
 
     def _get_response(self, response):
         response = response.json()
@@ -40,9 +39,18 @@ class Client:
         if response["code"] == 0:
             return response["data"]
         else:
-            raise CoinExBaseException(code=response["code"], message=response["message"])
+            raise CoinExBaseException(
+                code=response["code"], message=response["message"]
+            )
 
-    def _request(self, url, method: RequestMethod, data: dict = None, headers: dict = None, has_signature: bool = False):
+    def _request(
+        self,
+        url,
+        method: RequestMethod,
+        data: dict = None,
+        headers: dict = None,
+        has_signature: bool = False,
+    ):
         headers = dict() if not headers else headers
         data = dict() if not data else data
 
@@ -52,7 +60,9 @@ class Client:
             self._sign(data=data, headers=headers)
 
         try:
-            response = self._dispatch(url=url, method=method, data=data, headers=headers)
+            response = self._dispatch(
+                url=url, method=method, data=data, headers=headers
+            )
         except requests.exceptions.RequestException as e:
             raise RequestFailedToSendException(str(e))
 
